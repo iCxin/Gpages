@@ -228,12 +228,48 @@ const MainContent = () => {
       // Store resize cleanup
       engine.resizeHandler = handleResize;
 
+      // --- Device Orientation (Gravity Control) ---
+      const handleOrientation = (event) => {
+        const { gamma, beta } = event;
+        // Check if values are null (can happen on some devices/desktop)
+        if (gamma === null || beta === null) return;
+
+        // Gamma: Left/Right tilt (-90 to 90)
+        // Beta: Front/Back tilt (-180 to 180)
+        
+        // Clamp values to reasonable gravity range
+        // Standard gravity is y=1. We want to tilt it.
+        // If phone is upright (beta=90), gravity y=1.
+        // If phone is flat (beta=0), gravity y should be 0? 
+        // Actually for a "falling" effect on screen, we usually want:
+        // Tilted left (gamma < 0) -> gravity x < 0
+        // Tilted right (gamma > 0) -> gravity x > 0
+        // Tilted forward (beta < 90) -> gravity y < 0 (up the screen) ?
+        // Let's stick to standard 2D gravity simulation relative to screen plane.
+        
+        // Normalize gamma (-90 to 90) to -1 to 1 for X
+        // Normalize beta: 
+        //  - Upright (90) -> Y=1
+        //  - Upside down (-90) -> Y=-1
+        //  - Flat (0) -> Y=0 (no gravity? or just 0 Y gravity)
+        
+        const gravityX = Math.min(Math.max(gamma / 45, -1), 1);
+        const gravityY = Math.min(Math.max(beta / 45, -1), 1); // Simple mapping
+        
+        engine.gravity.x = gravityX;
+        engine.gravity.y = gravityY;
+      };
+
+      window.addEventListener('deviceorientation', handleOrientation);
+      engine.orientationHandler = handleOrientation;
+
     }, 100);
 
     return () => {
       clearTimeout(initTimer);
       if (engineRef.current) {
         if (engineRef.current.resizeHandler) window.removeEventListener('resize', engineRef.current.resizeHandler);
+        if (engineRef.current.orientationHandler) window.removeEventListener('deviceorientation', engineRef.current.orientationHandler);
         Matter.Engine.clear(engineRef.current);
       }
       if (runnerRef.current) {
