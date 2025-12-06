@@ -297,6 +297,11 @@ body.lights-off .clouds-container { opacity: 0.3; filter: brightness(0.3); }
     background: rgba(20, 20, 25, 0.85); /* Fallback solid/semi-transparent background */
   }
   
+  /* Hide Aurora on mobile to prevent heavy rendering/flickering */
+  .aurora-container {
+    display: none !important;
+  }
+  
   /* Prevent rubber-banding */
   html, body {
     overscroll-behavior: none;
