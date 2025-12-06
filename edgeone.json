@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "from": "cxin.net",
+      "to": "https://www.cxin.net",
+      "statusCode": 301
+    }
+  ]
+}
