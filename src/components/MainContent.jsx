@@ -256,19 +256,23 @@ const MainContent = () => {
 
         {/* Flattened Tech Stack Items */}
         {Object.values(allSkills).map((skill, i) => (
-           <div 
+           <a 
              key={skill.name} 
+             href={skill.url}
+             target="_blank"
+             rel="noopener noreferrer"
              className="tech-tag anim-item" 
              style={{ 
                transitionDelay: `${300 + i * 30}ms`,
-               borderColor: skill.color ? `${skill.color}40` : undefined 
+               borderColor: skill.color ? `${skill.color}40` : undefined,
+               textDecoration: 'none'
              }}
            >
               <svg viewBox="0 0 24 24" style={{ color: skill.color || 'currentColor' }}>
                  <path d={skill.path} />
               </svg>
-              <span>{skill.name}</span>
-           </div>
+              <span>{skill.fullName}</span>
+           </a>
         ))}
 
         {config.flatMap(group => {
