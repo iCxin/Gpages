@@ -362,9 +362,9 @@ body.lights-off .clouds-container { opacity: 0.3; filter: brightness(0.3); }
 .btn .icon-svg { width: 18px; height: 18px; }
 
 .footer { 
-  position: absolute; bottom: 1.5rem; left: 0; width: 100%; text-align: center; 
+  position: fixed; bottom: 1.5rem; left: 0; width: 100%; text-align: center; 
   font-size: 0.75rem; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px; 
-  opacity: 0; transition: opacity 1s 1s; color: rgba(255, 255, 255, 0.4); z-index: 20;
+  opacity: 0; transition: opacity 1s 1s; color: rgba(255, 255, 255, 0.4); z-index: 30;
 }
 .container.loaded ~ .footer { opacity: 1; }
 .footer p { margin: 4px 0; }
