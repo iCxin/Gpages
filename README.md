@@ -1,16 +1,91 @@
-# React + Vite
+# 🌌 Creative Personal Homepage / 创意个人主页
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A highly interactive, physics-based personal homepage built with React and Matter.js. This project features a unique "falling elements" interface where UI components respond to gravity, collisions, and user interaction, set against a dynamic, immersive backdrop.
 
-Currently, two official plugins are available:
+![Project Status](https://img.shields.io/badge/status-active-success.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Key Features
 
-## React Compiler
+- **Physics-Driven UI**: All main elements (profile, skills, social links) are physical bodies that fall, stack, and interact using the [Matter.js](https://brm.io/matter-js/) physics engine.
+- **Immersive Environment**:
+  - **3D Starfield**: A depth-aware, twinkling starfield with meteor showers implemented via HTML5 Canvas.
+  - **Dynamic Lighting**: Interactive moon with atmospheric glow and floating clouds.
+  - **Aurora Effect**: Subtle, animated aurora borealis background.
+- **Interactive Elements**:
+  - Drag and drop any element on the screen.
+  - "Danmaku" (bullet screen) comment system with toggle control.
+  - Context menu for quick access to settings.
+- **Responsive Design**: Adapts to various screen sizes with intelligent boundary management.
+- **Geeky Decor**: Background features a giant real-time clock and floating code symbols for a developer-centric aesthetic.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠 Tech Stack
 
-## Expanding the ESLint configuration
+- **Core**: [React 18](https://reactjs.org/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Physics Engine**: [Matter.js](https://brm.io/matter-js/)
+- **Styling**: CSS3 with modern features (Glassmorphism, Animations, Flexbox/Grid)
+- **Performance**: Optimized with code splitting, lazy loading, and `will-change` properties.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/personal-homepage.git
+   cd personal-homepage
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+## 📂 Project Structure
+
+```
+src/
+├── components/
+│   ├── MainContent.jsx    # Core physics container & element rendering
+│   ├── Starfield.jsx      # 3D starfield canvas animation
+│   ├── BackgroundDecor.jsx# Giant clock & floating symbols
+│   ├── Moon.jsx           # Interactive moon component
+│   ├── Aurora.jsx         # CSS-based aurora background
+│   ├── Clouds.jsx         # Floating cloud layers
+│   ├── Danmaku.jsx        # Bullet screen comment system
+│   ├── ContextMenu.jsx    # Custom right-click menu
+│   └── Footer.jsx         # Site footer
+├── data.js                # Configuration for skills, links, and content
+├── App.jsx                # Main application entry
+└── index.css              # Global styles & animations
+```
+
+## 🎨 Customization
+
+You can easily customize the content by modifying `src/data.js`:
+- **`allSkills`**: Add or remove tech stack items (icons, colors, names).
+- **`config`**: Update social links and project entries.
+- **`poems`**: Change the text displayed in the Danmaku system.
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+*Created with ❤️ by [Your Name]*

@@ -8,20 +8,10 @@ import Danmaku from './components/Danmaku';
 import MainContent from './components/MainContent';
 import Footer from './components/Footer';
 
-const Modals = lazy(() => import('./components/Modals'));
 const ContextMenu = lazy(() => import('./components/ContextMenu'));
 
 function App() {
-  const [activeModal, setActiveModal] = useState(null);
   const [showDanmaku, setShowDanmaku] = useState(true);
-
-  const handleOpenModal = (id) => {
-    setActiveModal(id);
-  };
-
-  const handleCloseModal = () => {
-    setActiveModal(null);
-  };
 
   return (
     <>
@@ -33,14 +23,11 @@ function App() {
       <Clouds />
       <Danmaku show={showDanmaku} />
       
-      <MainContent onOpenModal={handleOpenModal} />
+      <MainContent />
       <Footer />
       
       <Suspense fallback={null}>
-        <Modals activeId={activeModal} onClose={handleCloseModal} />
-        
         <ContextMenu 
-          onOpenModal={handleOpenModal} 
           showDanmaku={showDanmaku} 
           toggleDanmaku={() => setShowDanmaku(!showDanmaku)} 
         />

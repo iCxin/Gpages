@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import Matter from 'matter-js';
 import { allSkills, config } from '../data';
 
-const MainContent = ({ onOpenModal }) => {
+const MainContent = () => {
   const containerRef = useRef(null);
   const engineRef = useRef(null);
   const runnerRef = useRef(null);
