@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CxinLiu - 个人主页</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23ffeaa7'/%3E%3Ccircle cx='22' cy='10' r='3.5' fill='%23e0c060'/%3E%3Ccircle cx='9' cy='18' r='2.5' fill='%23e0c060'/%3E%3Ccircle cx='20' cy='24' r='2' fill='%23e0c060'/%3E%3C/svg%3E"> 
+    <style>
+        :root {
+            --bg-dark: #0f0c29;
+            --modal-bg: rgba(20, 20, 25, 0.85);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-sub: rgba(255, 255, 255, 0.7);
+            --radius-main: 12px;
+            --accent-glow: rgba(0, 210, 255, 0.6);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+        img { -webkit-user-drag: none; user-select: none; }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: default;
+            transition: background-color 1.5s ease;
+        }
+
+        /* --- 1. 背景层 --- */
+        .background-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5;
+            background: linear-gradient(to bottom, #020105, #0f0c29, #1a1530);
+            transition: filter 1.5s ease;
+        }
+        #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -4; pointer-events: none; }
+
+        /* --- 2. 极光层 --- */
+        .aurora-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -3; pointer-events: none; overflow: hidden;
+            opacity: 0.7; transition: opacity 1.5s ease;
+        }
+        .aurora {
+            position: absolute; filter: blur(60px); opacity: 0.6;
+            mix-blend-mode: color-dodge; animation: auroraWave 20s infinite alternate ease-in-out;
+        }
+        .aurora-1 {
+            top: -20%; left: -10%; width: 120%; height: 80%;
+            background: linear-gradient(135deg, transparent 20%, rgba(0, 255, 135, 0.4) 50%, rgba(96, 239, 255, 0.2) 80%, transparent 100%);
+            transform: rotate(-10deg) skewX(-20deg); animation-duration: 25s;
+        }
+        .aurora-2 {
+            top: -10%; right: -20%; width: 100%; height: 70%;
+            background: linear-gradient(225deg, transparent 30%, rgba(0, 255, 180, 0.3) 50%, rgba(0, 150, 255, 0.3) 70%, transparent 100%);
+            transform: rotate(15deg) skewX(20deg); animation-duration: 35s; animation-delay: -5s;
+        }
+        .aurora-3 {
+            bottom: 0; left: 20%; width: 80%; height: 60%;
+            background: radial-gradient(ellipse at center, rgba(50, 255, 150, 0.15), transparent 70%);
+            filter: blur(80px); animation: auroraPulse 15s infinite alternate ease-in-out;
+        }
+        @keyframes auroraWave {
+            0% { transform: translateX(0) rotate(-10deg) skewX(-10deg); opacity: 0.5; }
+            100% { transform: translateX(30px) rotate(-8deg) skewX(-5deg); opacity: 0.7; }
+        }
+        @keyframes auroraPulse {
+            0% { opacity: 0.1; transform: scale(1); }
+            100% { opacity: 0.3; transform: scale(1.1); }
+        }
+
+        /* --- 3. 月亮 --- */
+        .moon {
+            position: fixed; top: 50px; right: 50px; width: 130px; height: 130px;
+            border-radius: 50%; z-index: 50; cursor: pointer;
+            background-color: #ffeaa7;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E"),
+                radial-gradient(circle at 60% 40%, rgba(160, 110, 50, 0.2) 10%, transparent 40%),
+                radial-gradient(circle at 30% 65%, rgba(150, 100, 50, 0.25) 15%, transparent 45%),
+                radial-gradient(circle at 75% 65%, rgba(160, 110, 50, 0.2) 8%, transparent 30%),
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.6) 2%, transparent 10%);
+            background-blend-mode: overlay, normal, normal, normal, normal;
+            box-shadow: inset -20px -20px 50px rgba(0,0,0,0.3), inset 10px 10px 30px rgba(255,255,255,0.8), 0 0 30px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 140, 0, 0.25);
+            filter: contrast(1.1) sepia(0.2); transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .moon:hover { transform: scale(1.05); }
+        .moon.off {
+            background-color: #2a2a2a; box-shadow: inset -20px -20px 50px rgba(0,0,0,0.8), 0 0 0 transparent; filter: grayscale(1) brightness(0.4);
+        }
+        
+        body.lights-off .background-layer { filter: brightness(0.2); }
+        body.lights-off .aurora-container { opacity: 0; }
+        body.lights-off .clouds-container { opacity: 0.3; filter: brightness(0.3); }
+
+        @media (max-width: 768px) { .moon { width: 80px; height: 80px; top: 30px; right: 20px; } }
+
+        /* --- 4. 云层 --- */
+        .clouds-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 51; pointer-events: none; overflow: hidden; transition: opacity 1.5s ease, filter 1.5s ease; }
+        .cloud {
+            position: absolute; top: 0; left: 0; width: 200%; height: 100%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.8'/%3E%3C/svg%3E");
+            background-size: cover;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+        }
+        .cloud-1 { opacity: 0.15; mix-blend-mode: screen; animation: cloudMove 120s linear infinite; filter: contrast(0.8) brightness(0.8); }
+        .cloud-2 { top: -20%; width: 250%; opacity: 0.1; mix-blend-mode: overlay; animation: cloudMove 90s linear infinite reverse; filter: contrast(1.2) brightness(1.1); }
+        .cloud-3 { bottom: -30%; width: 220%; height: 60%; opacity: 0.15; mix-blend-mode: screen; animation: cloudMove 60s linear infinite; filter: blur(5px); }
+        @keyframes cloudMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- 5. 弹幕 --- */
+        .danmaku-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 20%; 
+            z-index: 60; pointer-events: none; overflow: hidden;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .danmaku-item {
+            position: absolute; left: 0; white-space: nowrap; 
+            font-family: 'Noto Serif SC', serif; font-weight: 700; letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.75); text-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.2);
+            will-change: transform; pointer-events: auto; cursor: default;
+            transition: color 0.3s, opacity 0.3s, text-shadow 0.3s;
+            animation: floatLeft linear forwards;
+        }
+        .danmaku-item:hover { color: #fff; opacity: 1 !important; text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(0,210,255,0.6); z-index: 100; animation-play-state: paused; }
+        @keyframes floatLeft { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+
+        /* --- 6. 主容器 --- */
+        .container { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 20; pointer-events: none; 
+        }
+        .container > div {
+            position: relative; width: 100%; height: 100%;
+        }
+        .container > div > * { 
+            pointer-events: auto; 
+            position: absolute; /* 初始绝对定位，JS会覆盖具体位置 */
+        }
+
+        .anim-item { opacity: 0; transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .container.loaded .anim-item { opacity: 1; }
+
+        .avatar-wrapper {
+            width: 120px; height: 120px; border-radius: 50%; padding: 3px;
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5, #8E2DE2); background-size: 200% 200%;
+            animation: gradientBorder 3s ease infinite, breathe 4s infinite ease-in-out;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
+            /* Removed margin: 0 auto 1.5rem; */
+        }
+        @keyframes gradientBorder { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes breathe { 0%, 100% { box-shadow: 0 0 25px rgba(0, 210, 255, 0.3); transform: scale(1); } 50% { box-shadow: 0 0 50px rgba(142, 45, 226, 0.6); transform: scale(1.02); } }
+        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #1a1512; display: block; }
+
+        .name {
+            font-size: 3.5rem; font-weight: 800; letter-spacing: -1.5px;
+            background: linear-gradient(to right, #ffffff, #89f7fe, #66a6ff, #ffffff);
+            background-size: 300% auto;
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            text-shadow: 0 0 30px rgba(0, 210, 255, 0.3);
+            animation: textFlow 5s linear infinite;
+            margin: 0; white-space: nowrap;
+        }
+        @keyframes textFlow { to { background-position: 300% center; } }
+        
+        /* Tagline */
+        .tagline-container { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0; }
+        .role-tag {
+            font-size: 1rem; color: rgba(255, 255, 255, 0.85); font-weight: 300;
+            padding: 6px 14px; border-radius: 20px; border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: default; letter-spacing: 1px;
+        }
+        .role-tag:hover {
+            background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15); color: #fff;
+            transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 210, 255, 0.15);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.6); backdrop-filter: blur(4px);
+        }
+        .role-divider { color: rgba(255, 255, 255, 0.3); font-size: 0.9rem; transform: skew(-15deg); }
+
+        .description { font-size: 1rem; color: var(--text-sub); max-width: 400px; line-height: 1.8; font-weight: 400; margin: 0; text-align: left; }
+        
+        /* Tech Stack */
+        .tech-stack { display: flex; justify-content: center; align-items: center; gap: 28px; flex-wrap: wrap; max-width: 300px; margin: 0; }
+        .tech-item {
+            position: relative; width: 42px; height: 42px; display: flex; justify-content: center; align-items: center;
+            color: rgba(255, 255, 255, 0.6); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: help;
+        }
+        .tech-item svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+        .tech-item:hover { color: #fff; transform: translateY(-6px) scale(1.1); filter: drop-shadow(0 0 10px currentColor); }
+        .tech-item::after {
+            content: attr(data-name); position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
+            font-size: 0.8rem; color: #fff; background: rgba(0,0,0,0.8);
+            padding: 4px 8px; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+            white-space: nowrap; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10;
+        }
+        .tech-item:hover::after { opacity: 1; }
+
+        @media (max-width: 768px) {
+            .tech-stack { gap: 12px; max-width: 250px; }
+            .tech-item { width: 32px; height: 32px; }
+            .tech-item::after { font-size: 0.7rem; bottom: -22px; padding: 2px 5px; }
+            .danmaku-item { font-size: 0.9rem !important; }
+            .tagline-container { gap: 4px; }
+            .role-tag { padding: 4px 8px; font-size: 0.9rem; }
+        }
+
+        .tech-item[data-name="HTML5"]:hover { color: #E34F26; }
+        .tech-item[data-name="Web"]:hover { color: #40C4FF; }
+        .tech-item[data-name="React"]:hover { color: #61DAFB; }
+        .tech-item[data-name="Next.js"]:hover { color: #ffffff; }
+        .tech-item[data-name="Android"]:hover { color: #3DDC84; }
+        .tech-item[data-name="Python"]:hover { color: #FFD43B; }
+        .tech-item[data-name="C"]:hover { color: #A8B9CC; }
+        .tech-item[data-name="Lua"]:hover { color: #000080; filter: drop-shadow(0 0 8px #666); } 
+        .tech-item[data-name="Linux"]:hover { color: #FCC624; }
+        .tech-item[data-name="Server"]:hover { color: #00E676; }
+        .tech-item[data-name="PS"]:hover { color: #31A8FF; }
+        .tech-item[data-name="AI"]:hover { color: #FF9A00; }
+
+        .action-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin: 0; }
+
+        .btn {
+            position: relative; display: flex; align-items: center; gap: 10px; padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-main);
+            color: #e0e0e0; text-decoration: none; font-size: 0.95rem; font-weight: 600; letter-spacing: 0.5px;
+            overflow: hidden; cursor: pointer; backdrop-filter: blur(10px);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn::before {
+            content: ''; position: absolute; top: var(--y, -50%); left: var(--x, -50%);
+            width: 150px; height: 150px;
+            background: radial-gradient(circle, var(--accent-glow), transparent 60%);
+            transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;
+            pointer-events: none; z-index: 0; mix-blend-mode: screen;
+        }
+        .btn::after { content: ''; position: absolute; inset: 1px; border-radius: var(--radius-main); background: rgba(20, 20, 25, 0.8); z-index: 0; }
+        .btn span, .btn svg { position: relative; z-index: 1; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.2); }
+        .btn:hover::before { opacity: 0.8; }
+        .btn:active { transform: scale(0.96); }
+
+        /* --- 弹窗样式 --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 100; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-card {
+            background: var(--modal-bg); width: 90%; max-width: 420px; 
+            border-radius: 20px; padding: 2rem; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            transform: scale(0.95) translateY(20px); opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 80vh; overflow-y: auto;
+        }
+        .modal-overlay.active .modal-card { transform: scale(1) translateY(0); opacity: 1; }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .modal-title { font-size: 1.4rem; font-weight: 700; color: #fff; }
+        .close-btn { background: none; border: none; color: #666; cursor: pointer; padding: 4px; transition: color 0.2s;}
+        .close-btn:hover { color: #fff; }
+
+        .link-list { display: flex; flex-direction: column; gap: 12px; }
+        .link-item {
+            display: flex; align-items: center; padding: 14px 16px; border-radius: var(--radius-main);
+            background: rgba(255, 255, 255, 0.03); color: #ccc; text-decoration: none;
+            transition: all 0.2s; font-weight: 500; border: 1px solid transparent; 
+            opacity: 0; transform: translateX(-20px);
+        }
+        .modal-overlay.active .link-item { animation: slideIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+        .link-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.1); transform: translateX(4px) !important; color: #fff; }
+        
+        .icon-svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .btn .icon-svg { width: 18px; height: 18px; }
+        .link-item .icon-svg { margin-right: 14px; opacity: 0.8; }
+        .link-desc { font-size: 0.8rem; color: #666; margin-left: auto; font-family: 'Outfit', sans-serif; }
+
+        /* Skill Grid */
+        .skill-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 10px 0; }
+        .skill-card { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+        .skill-name { font-size: 0.8rem; color: #ccc; font-weight: 500; }
+        .skill-card .tech-item::after { display: none; }
+        @media (max-width: 768px) { .skill-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .footer { 
+            position: absolute; bottom: 1.5rem; width: 100%; text-align: center; 
+            font-size: 0.75rem; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px; 
+            opacity: 0; transition: opacity 1s 1s; color: rgba(255, 255, 255, 0.4); z-index: 20;
+        }
+        .container.loaded ~ .footer { opacity: 1; }
+        .footer p { margin: 4px 0; }
+        .icp-link { color: rgba(255, 255, 255, 0.4); text-decoration: none; transition: all 0.3s ease; position: relative; }
+        .icp-link:hover { color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255, 255, 255, 0.3); }
+
+        .modal-card::-webkit-scrollbar { width: 4px; }
+        .modal-card::-webkit-scrollbar-track { background: transparent; }
+        .modal-card::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+        /* 右键菜单 */
+        #context-menu {
+            position: fixed; z-index: 999; background: rgba(30, 30, 35, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 12px; padding: 8px; width: 180px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none; opacity: 0; transform: scale(0.95); transition: opacity 0.2s, transform 0.2s; pointer-events: auto;
+        }
+        #context-menu.visible { display: block; opacity: 1; transform: scale(1); }
+        .menu-item {
+            padding: 10px 12px; color: #e0e0e0; font-size: 0.9rem; border-radius: 8px;
+            cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.2s, color 0.2s;
+        }
+        .menu-item:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .menu-item svg { width: 16px; height: 16px; opacity: 0.8; }
+        .menu-divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 6px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="background-layer"></div>
+    <canvas id="starfield"></canvas>
+    <div class="aurora-container">
+        <div class="aurora aurora-1"></div>
+        <div class="aurora aurora-2"></div>
+        <div class="aurora aurora-3"></div>
+    </div>
+
+    <div class="moon" id="moon"></div>
+    <div class="clouds-container">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+    </div>
+
+    <div id="danmaku-container" class="danmaku-container"></div>
+
+    <div class="container" id="mainContainer">
+        <div> 
+            <div class="avatar-wrapper anim-item" style="transition-delay: 0ms;">
+                <img src="avatar_50KB.png" alt="Avatar" class="avatar">
+            </div>
+
+            <h1 class="name anim-item" style="transition-delay: 100ms;">CxinLiu</h1>
+            
+            <div class="tagline-container anim-item" style="transition-delay: 200ms;">
+                <span class="role-tag">业余开发者</span>
+                <span class="role-divider">/</span>
+                <span class="role-tag">安卓搞机玩家</span>
+                <span class="role-divider">/</span>
+                <span class="role-tag">平面设计师</span>
+            </div>
+            
+            <p class="description anim-item" style="transition-delay: 300ms;">
+                热爱编程与设计，专注用技术提高效率。
+            </p>
+            
+            <div id="tech-stack-container" class="tech-stack anim-item" style="transition-delay: 300ms;"></div>
+
+            <div class="action-buttons anim-item" id="buttonContainer" style="transition-delay: 400ms;"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 www.cxin.net. All rights reserved.</p>
+        <p>
+            <a href="https://beian.miit.gov.cn/" target="_blank" class="icp-link">
+                蜀ICP备2024051667号-4
+            </a>
+        </p>
+    </div>
+
+    <div id="context-menu">
+        <div class="menu-item" onclick="window.open(config[0].items[0].url, '_blank')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            获取网站源码
+        </div>
+        <div class="menu-item" onclick="openModal('social')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            关于作者
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item" onclick="location.reload()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            刷新页面
+        </div>
+    </div>
+
+    <div id="modalContainer"></div>
+
+    <script>
+        const allSkills = {
+            android: { name: "Android", color: "#3DDC84", path: "M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0001.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1529-.5676.416.416 0 00-.5676.1529l-2.0294 3.513C15.5895 8.2433 13.8563 7.847 12.0002 7.847c-1.8561 0-3.5893.3963-5.1287 1.1135L4.8421 5.4475a.416.416 0 00-.5676-.1529.416.416 0 00-.1529.5676l1.9973 3.4592C2.6882 11.1867.3432 14.6589.3432 18.6617h23.3136c0-4.0028-2.345-7.475-5.775-9.3403" },
+            python: { name: "Python", color: "#FFD43B", path: "M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-8.3H6.18l-.01-1.41.09-.7.19-.62.29-.53.36-.43.39-.33.41-.24.41-.16.4-.1.36-.06.32-.02.23-.01h5.84l.07.02.24.06zM9.25 1.43l-.3.06-.2.12-.13.19-.04.27.05.3.13.24.2.13.25.04.26-.06.2-.13.13-.2.04-.26-.05-.3-.13-.23-.2-.13-.26-.04zm5.5 17.14l.3.05.27.13.23.2.13.26.04.3-.06.27-.13.2-.2.13-.26.04-.3-.05-.27-.13-.23-.2-.13-.26-.04-.3.06-.27.13-.2.2-.13.26-.04z" },
+            web: { name: "Web", color: "#40C4FF", path: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" },
+            server: { name: "Server", color: "#00E676", path: "M20 13H4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zM7 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm13-8H4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zM7 11c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm13-8H4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" },
+            ps: { name: "PS", fullName: "Adobe Photoshop", color: "#31A8FF", path: "M4 4h16c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm4 3v8h2v-2h2c1.66 0 3-1.34 3-3s-1.34-3-3-3H8zm2 2h2c.55 0 1 .45 1 1s-.45 1-1 1h-2V9zm7 3c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1v-1h2v1c0 1.66-1.34 3-3 3s-3-1.34-3-3v-1h2v1z" },
+            ai: { name: "AI", fullName: "Adobe Illustrator", color: "#FF9A00", path: "M4 4h16c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm7 3L8 18h2l.5-1.5h3l.5 1.5h2L13 7h-2zm-.2 2.5h1.4l.7 2h-2.8l.7-2zm7 1.5v4h2v-4h-2zm0-2v1.5h2V12h-2z" },
+            react: { name: "React", color: "#61DAFB", path: "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z" },
+            next: { name: "Next.js", color: "#fff", path: "M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.72 14.58l-5.44-7.04v7.04h-1.56V8.62h1.56l5.44 7.04V8.62h1.56v7.96h-1.56z" },
+            html5: { name: "HTML5", color: "#E34F26", path: "M1.5 2h21l-1.91 21.563L12 24l-8.59-2.437L1.5 2zm3.33 3.32l.75 8.4 6.42 1.74 6.42-1.74.52-5.78H8.16l-.23-2.62h9.57l.23-2.62H3.17l.56 5.24h9.7l-.19 2.22-3.88 1.04-3.88-1.04-.15-1.84H4.83z" },
+            c: { name: "C", color: "#A8B9CC", path: "M11.884 1.004C5.86 1.004 1.004 5.917 1.004 12c0 6.082 4.856 10.996 10.88 10.996 4.606 0 8.524-2.84 10.05-6.932l-2.616-.928c-1.074 2.87-3.834 4.86-7.434 4.86-4.414 0-7.996-3.582-7.996-7.996S7.466 4.004 11.88 4.004c3.6 0 6.36 1.99 7.434 4.86l2.616-.928C20.404 3.844 16.49 1.004 11.884 1.004z" },
+            linux: { name: "Linux", color: "#FCC624", path: "M12 0c-4 0-5 3.5-5 5 0 1.5.5 3 2 4 0 2.5-3 3-3 7 0 4.5 3 8 6 8s6-3.5 6-8c0-4-3-4.5-3-7 1.5-1 2-2.5 2-4 0-1.5-1-5-5-5z" },
+            lua: { name: "Lua", color: "#000080", path: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" }
+        };
+
+        const config = [
+            {
+                id: "social",
+                title: "社交方式",
+                iconPath: "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6", 
+                items: [
+                    { name: "GitHub", url: "https://github.com/icxin", desc: "Source Code", iconPath: "M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" },
+                    { name: "Email", url: "mailto:tojx@qq.com", desc: "Contact Me", iconPath: "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6" },
+                    { name: "Bilibili", url: "https://space.bilibili.com/372290308", desc: "Follow Me", iconPath: "M3 10a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8z M8 3l3 5 M16 3l-3 5 M9 14h.01 M15 14h.01" }
+                ]
+            },
+            {
+                id: "projects",
+                title: "我的作品",
+                iconPath: "M16 18l6-6-6-6 M8 6l-6 6 6 6", 
+                items: [
+                    { name: "共享文库", url: "https://ima.cxin.net/", desc: "IMA DOCS", iconPath: "M12 2l-10 5 10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5" },
+                    { name: "学生工作站", url: "https://tx.cxin.net/", desc: "WORKING", iconPath: "M5 2h14a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M12 18h.01" }
+                ]
+            },
+            {
+                id: "skills",
+                title: "全部技能",
+                items: [] // 占位
+            }
+        ];
+
+        function renderTechStack() {
+            const container = document.getElementById('tech-stack-container');
+            const showList = ['android', 'python', 'web', 'server', 'ps']; 
+            
+            showList.forEach(key => {
+                if (allSkills[key]) {
+                    container.appendChild(createTechIcon(allSkills[key]));
+                }
+            });
+
+            const moreBtn = document.createElement('div');
+            moreBtn.className = 'tech-item';
+            moreBtn.setAttribute('data-name', 'More');
+            moreBtn.innerHTML = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="16" cy="12" r="1" fill="currentColor"/></svg>`;
+            moreBtn.onclick = () => openModal('skills');
+            container.appendChild(moreBtn);
+        }
+
+        function createTechIcon(skill) {
+            const div = document.createElement('div');
+            div.className = 'tech-item';
+            div.setAttribute('data-name', skill.name);
+            div.innerHTML = `<svg viewBox="0 0 24 24"><path d="${skill.path}" fill="currentColor"/></svg>`;
+            div.onmouseenter = () => div.style.color = skill.color;
+            div.onmouseleave = () => div.style.color = '';
+            return div;
+        }
+
+        const poems = [
+            "醉后不知天在水，满船清梦压星河", "明月几时有，把酒问青天", "星垂平野阔，月涌大江流",
+            "举杯邀明月，对影成三人", "愿我如星君如月，夜夜流光相皎洁", "海上生明月，天涯共此时",
+            "云母屏风烛影深，长河渐落晓星沉", "今人不见古时月，今月曾经照古人", "月落乌啼霜满天，江枫渔火对愁眠",
+            "露从今夜白，月是故乡明", "纤云弄巧，飞星传恨，银汉迢迢暗度", "东风夜放花千树，更吹落，星如雨",
+            "此生此夜不长好，明月明年何处看", "微微风簇浪，散作满河星", "天阶夜色凉如水，卧看牵牛织女星",
+            "此情可待成追忆，只是当时已惘然", "人生若只如初见，何事秋风悲画扇", "玲珑骰子安红豆，入骨相思知不知"
+        ];
+
+        function initDanmaku() {
+            const container = document.getElementById('danmaku-container');
+            const tracks = Array(6).fill(true); 
+
+            function spawn() {
+                const availableTracks = tracks.map((val, idx) => val ? idx : -1).filter(val => val !== -1);
+                if (availableTracks.length === 0) return;
+                const trackIndex = availableTracks[Math.floor(Math.random() * availableTracks.length)];
+                
+                const text = poems[Math.floor(Math.random() * poems.length)];
+                const span = document.createElement('span');
+                span.innerText = text;
+                span.className = 'danmaku-item';
+                
+                const depth = Math.random(); 
+                const scale = 0.8 + depth * 0.5; 
+                const opacity = 0.3 + depth * 0.5; 
+                const duration = 25 - depth * 10; 
+
+                span.style.top = `${trackIndex * 15 + Math.random() * 5}%`;
+                span.style.fontSize = `${scale}rem`;
+                span.style.opacity = opacity;
+                span.style.animationDuration = `${duration}s`;
+                span.style.zIndex = Math.floor(scale * 100); 
+
+                container.appendChild(span);
+
+                tracks[trackIndex] = false;
+                setTimeout(() => { tracks[trackIndex] = true; }, duration * 700);
+
+                span.addEventListener('animationend', () => { span.remove(); });
+            }
+
+            for(let i=0; i<3; i++) setTimeout(spawn, i * 2000);
+            setInterval(spawn, 4500); 
+        }
+
+        function renderContent() {
+            const btnContainer = document.getElementById('buttonContainer');
+            const modalContainer = document.getElementById('modalContainer');
+
+            config.forEach(item => {
+                if (item.id === 'skills') return; 
+
+                const btn = document.createElement('a');
+                btn.className = 'btn';
+                btn.href = 'javascript:void(0)';
+                btn.onclick = () => openModal(item.id);
+                btn.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24">${createPath(item.iconPath)}</svg><span>${item.title}</span>`;
+                
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    btn.style.setProperty('--x', `${e.clientX - rect.left}px`);
+                    btn.style.setProperty('--y', `${e.clientY - rect.top}px`);
+                });
+
+                btnContainer.appendChild(btn);
+
+                const modalOverlay = document.createElement('div');
+                modalOverlay.className = 'modal-overlay';
+                modalOverlay.id = `modal-${item.id}`;
+                modalOverlay.onclick = (e) => { if(e.target === modalOverlay) closeModal(item.id); };
+
+                let listHtml = '';
+                item.items.forEach((link, index) => {
+                    listHtml += `
+                        <a href="${link.url}" target="_blank" class="link-item" style="animation-delay: ${index * 0.1}s">
+                            <svg class="icon-svg" viewBox="0 0 24 24">${createPath(link.iconPath)}</svg>
+                            ${link.name}
+                            ${link.desc ? `<span class="link-desc">${link.desc}</span>` : ''}
+                        </a>
+                    `;
+                });
+
+                modalOverlay.innerHTML = `
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <span class="modal-title">${item.title}</span>
+                            <button class="close-btn" onclick="closeModal('${item.id}')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+                        <div class="link-list">${listHtml}</div>
+                    </div>
+                `;
+                modalContainer.appendChild(modalOverlay);
+            });
+
+            const skillsModal = document.createElement('div');
+            skillsModal.className = 'modal-overlay';
+            skillsModal.id = 'modal-skills';
+            skillsModal.onclick = (e) => { if(e.target === skillsModal) closeModal('skills'); };
+            
+            let skillGridHtml = '';
+            Object.values(allSkills).forEach(skill => {
+                const displayName = skill.fullName || skill.name;
+                skillGridHtml += `
+                    <div class="skill-card">
+                        <div class="tech-item" style="width:48px;height:48px;" data-name="${skill.name}" onmouseenter="this.style.color='${skill.color}'" onmouseleave="this.style.color=''">
+                            <svg viewBox="0 0 24 24"><path d="${skill.path}" fill="currentColor"/></svg>
+                        </div>
+                        <span class="skill-name">${displayName}</span>
+                    </div>
+                `;
+            });
+
+            skillsModal.innerHTML = `
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <span class="modal-title">我的技能</span>
+                        <button class="close-btn" onclick="closeModal('skills')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+                    <div class="skill-grid">${skillGridHtml}</div>
+                </div>
+            `;
+            modalContainer.appendChild(skillsModal);
+        }
+
+        function createPath(d) { return d.includes('<') ? d : `<path d="${d}"></path>`; }
+        function openModal(id) { document.getElementById(`modal-${id}`).classList.add('active'); }
+        function closeModal(id) { document.getElementById(`modal-${id}`).classList.remove('active'); }
+
+        function initScatterLayout() {
+            const container = document.querySelector('.container > div');
+            const items = Array.from(container.children);
+            const isMobile = window.innerWidth < 768;
+            
+            const cols = isMobile ? 1 : 3;
+            const rows = isMobile ? items.length : 3; 
+            
+            const cells = [];
+            for(let r=0; r<rows; r++) {
+                for(let c=0; c<cols; c++) {
+                    cells.push({r, c});
+                }
+            }
+            
+            if (!isMobile) {
+                cells.sort(() => Math.random() - 0.5);
+            }
+            
+            const marginX = isMobile ? 10 : 15;
+            const marginY = isMobile ? 15 : 15;
+            const usableW = 100 - 2 * marginX;
+            const usableH = 100 - 2 * marginY;
+
+            const placedRects = []; // Store {left, top, right, bottom} of placed items in %
+
+            items.forEach((item, index) => {
+                if(index >= cells.length) return; 
+                
+                const cell = cells[index];
+                const cellW = usableW / cols;
+                const cellH = usableH / rows;
+                
+                const cx = marginX + (cell.c + 0.5) * cellW;
+                const cy = marginY + (cell.r + 0.5) * cellH;
+                
+                let x, y, rot;
+                let attempt = 0;
+                let overlap = true;
+
+                // Try to position without overlap
+                while (overlap && attempt < 10) {
+                    const jitterAmount = isMobile ? 0.1 : 0.3; // Reduced jitter
+                    const jitterX = (Math.random() - 0.5) * (cellW * jitterAmount); 
+                    const jitterY = (Math.random() - 0.5) * (cellH * jitterAmount);
+                    
+                    x = cx + jitterX;
+                    y = cy + jitterY;
+
+                    x = Math.max(10, Math.min(90, x));
+                    y = Math.max(10, Math.min(90, y));
+                    
+                    // Simple collision detection based on approximate size (in %)
+                    // Assuming items are roughly 20% wide and 10% high for collision check
+                    const w = 20; 
+                    const h = 15;
+                    const rect = { l: x - w/2, r: x + w/2, t: y - h/2, b: y + h/2 };
+
+                    overlap = false;
+                    if (!isMobile) { // Only check collision on desktop where random overlap is likely
+                        for (const r of placedRects) {
+                            if (rect.l < r.r && rect.r > r.l && rect.t < r.b && rect.b > r.t) {
+                                overlap = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!overlap) {
+                        placedRects.push(rect);
+                    }
+                    attempt++;
+                }
+
+                const rotRange = isMobile ? 2 : 8; 
+                rot = (Math.random() - 0.5) * rotRange * 2; 
+                
+                item.style.position = 'absolute';
+                item.style.left = `${x}%`;
+                item.style.top = `${y}%`;
+                item.style.transform = `translate(-50%, -50%) rotate(${rot}deg)`;
+                item.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                
+                makeDraggable(item);
+            });
+        }
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(initScatterLayout, 300);
+        });
+
+        function makeDraggable(el) {
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+            
+            const onMouseDown = (e) => {
+                if(e.target.closest('a') || e.target.closest('button')) return; 
+                isDragging = true;
+                startX = e.clientX || e.touches[0].clientX;
+                startY = e.clientY || e.touches[0].clientY;
+                initialLeft = el.offsetLeft;
+                initialTop = el.offsetTop;
+                el.style.cursor = 'grabbing';
+                el.style.transition = 'none';
+                if(e.type === 'mousedown') e.preventDefault(); 
+            };
+
+            const onMouseMove = (e) => {
+                if (!isDragging) return;
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+                
+                // Because of transform: translate(-50%, -50%), 
+                // style.left and style.top represent the CENTER coordinates of the element.
+                // initialLeft (from offsetLeft) is the current center X position in pixels.
+                let newCenterX = initialLeft + dx;
+                let newCenterY = initialTop + dy;
+                
+                // Boundary Check (Pixels)
+                // We want the element to stay within the window, with some margin.
+                const rect = el.getBoundingClientRect();
+                const halfW = rect.width / 2;
+                const halfH = rect.height / 2;
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                
+                const safeMargin = 10; // Minimum distance from screen edge to element edge
+
+                // Constrain Center X
+                // Min Center X: halfW + safeMargin (Left edge at safeMargin)
+                // Max Center X: winW - halfW - safeMargin (Right edge at winW - safeMargin)
+                if (newCenterX < halfW + safeMargin) newCenterX = halfW + safeMargin;
+                if (newCenterX > winW - halfW - safeMargin) newCenterX = winW - halfW - safeMargin;
+
+                // Constrain Center Y
+                if (newCenterY < halfH + safeMargin) newCenterY = halfH + safeMargin;
+                if (newCenterY > winH - halfH - safeMargin) newCenterY = winH - halfH - safeMargin;
+
+                el.style.left = `${newCenterX}px`;
+                el.style.top = `${newCenterY}px`;
+                
+                if(e.type === 'touchmove') e.preventDefault();
+            };
+
+            const onMouseUp = () => {
+                if(isDragging) {
+                    isDragging = false;
+                    el.style.cursor = 'grab';
+                    el.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                }
+            };
+
+            el.addEventListener('mousedown', onMouseDown);
+            el.addEventListener('touchstart', onMouseDown, {passive: false});
+            
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('touchmove', onMouseMove, {passive: false});
+            
+            window.addEventListener('mouseup', onMouseUp);
+            window.addEventListener('touchend', onMouseUp);
+            
+            el.style.cursor = 'grab';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTechStack();
+            renderContent();
+            initDanmaku();
+            initScatterLayout(); // Call the new function
+            
+            const moon = document.getElementById('moon');
+            moon.addEventListener('click', function() {
+                this.classList.toggle('off');
+                document.body.classList.toggle('lights-off');
+            });
+
+            const contextMenu = document.getElementById('context-menu');
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                let x = e.clientX;
+                let y = e.clientY;
+                if (x + 180 > window.innerWidth) x -= 180;
+                if (y + 120 > window.innerHeight) y -= 120;
+                contextMenu.style.left = `${x}px`;
+                contextMenu.style.top = `${y}px`;
+                contextMenu.classList.add('visible');
+            });
+            document.addEventListener('click', () => { contextMenu.classList.remove('visible'); });
+
+            setTimeout(() => { document.getElementById('mainContainer').classList.add('loaded'); }, 100);
+        });
+
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let width, height, stars = [], meteors = [];
+
+        class Star3D {
+            constructor() {
+                this.x = (Math.random() - 0.5) * width * 2; 
+                this.y = (Math.random() - 0.5) * height * 2;
+                this.z = Math.random() * width; 
+                this.pz = this.z;
+            }
+
+            update() {
+                this.z -= 0.5; 
+                if (this.z <= 0) {
+                    this.z = width;
+                    this.x = (Math.random() - 0.5) * width * 2;
+                    this.y = (Math.random() - 0.5) * height * 2;
+                    this.pz = this.z;
+                }
+            }
+
+            draw() {
+                const sx = (this.x / this.z) * width/2 + width/2;
+                const sy = (this.y / this.z) * height/2 + height/2;
+                const r = (1 - this.z / width) * 1.5;
+                const opacity = (1 - this.z / width);
+
+                if (sx > 0 && sx < width && sy > 0 && sy < height) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        class Meteor {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width + 300; this.y = -100;
+                this.size = Math.random() * 2 + 1; this.speed = Math.random() * 10 + 10;
+                this.angle = Math.PI / 4; this.life = 0; this.maxLife = 100;
+            }
+            update() {
+                this.x -= this.speed * Math.cos(this.angle); this.y += this.speed * Math.sin(this.angle);
+                this.life++;
+                if (this.x < -100 || this.y > height + 100 || this.life > this.maxLife) {
+                    this.reset(); this.x = Math.random() * width * 1.5; this.y = Math.random() * -height;
+                }
+            }
+            draw() {
+                const tail = 150;
+                const grad = ctx.createLinearGradient(this.x, this.y, this.x + tail * Math.cos(this.angle), this.y - tail * Math.sin(this.angle));
+                grad.addColorStop(0, 'white'); grad.addColorStop(0.4, 'rgba(0, 210, 255, 0.4)'); grad.addColorStop(1, 'transparent');
+                ctx.strokeStyle = grad; ctx.lineWidth = this.size; ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x + tail * Math.cos(this.angle), this.y - tail * Math.sin(this.angle)); ctx.stroke();
+            }
+        }
+        function initCanvas() {
+            width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height;
+            stars = Array(800).fill().map(() => new Star3D());
+            meteors = [new Meteor(), new Meteor()]; meteors[1].y = -5000;
+        }
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            stars.forEach(s => { s.update(); s.draw(); });
+            meteors.forEach(m => { m.update(); m.draw(); });
+            requestAnimationFrame(animate);
+        }
+        window.addEventListener('resize', initCanvas);
+        initCanvas(); animate();
+    </script>
+</body>
+</html>
