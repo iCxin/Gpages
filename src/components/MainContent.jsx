@@ -179,11 +179,24 @@ const MainContent = () => {
 
       // Window resize handler
       let resizeTimeout;
+      let prevW = width;
+      let prevH = height;
+
       const handleResize = () => {
          clearTimeout(resizeTimeout);
          resizeTimeout = setTimeout(() => {
              const newW = container.clientWidth;
              const newH = container.clientHeight;
+             const isMobile = window.innerWidth < 768;
+
+             // Ignore small vertical changes on mobile (likely URL bar toggle)
+             // Only resize if width changes or height changes significantly (>150px)
+             if (isMobile && newW === prevW && Math.abs(newH - prevH) < 150) {
+                 return;
+             }
+
+             prevW = newW;
+             prevH = newH;
              
              const wallThickness = 120;
              const footerSpace = 100; // Keep consistent with init
@@ -240,6 +253,37 @@ const MainContent = () => {
     btn.style.setProperty('--y', `${y}px`);
   };
 
+  // --- Mobile Touch/Click Handling ---
+  // Fix for Matter.js interfering with clicks on mobile
+  const handlePointerDown = (e) => {
+     // Store start position and time
+     e.currentTarget.dataset.startX = e.clientX || e.touches?.[0]?.clientX;
+     e.currentTarget.dataset.startY = e.clientY || e.touches?.[0]?.clientY;
+     e.currentTarget.dataset.startTime = Date.now();
+  };
+
+  const handlePointerUp = (e) => {
+     const el = e.currentTarget;
+     const startX = parseFloat(el.dataset.startX || 0);
+     const startY = parseFloat(el.dataset.startY || 0);
+     const startTime = parseInt(el.dataset.startTime || 0);
+     
+     const endX = e.clientX || e.changedTouches?.[0]?.clientX;
+     const endY = e.clientY || e.changedTouches?.[0]?.clientY;
+     
+     const dist = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+     const timeDiff = Date.now() - startTime;
+
+     // If tap is short and movement is small, treat as click
+     if (dist < 10 && timeDiff < 500) {
+        // Force navigation
+        const url = el.getAttribute('href');
+        if (url) {
+           window.open(url, '_blank', 'noopener,noreferrer');
+        }
+     }
+  };
+
   return (
     <div className="container" id="mainContainer" ref={containerRef}>
       <div>
@@ -278,6 +322,8 @@ const MainContent = () => {
                borderColor: skill.color ? `${skill.color}40` : undefined,
                textDecoration: 'none'
              }}
+             onTouchStart={handlePointerDown}
+             onTouchEnd={handlePointerUp}
            >
               <svg viewBox="0 0 24 24" style={{ color: skill.color || 'currentColor' }}>
                  <path d={skill.path} />
@@ -297,6 +343,8 @@ const MainContent = () => {
                 className={`btn anim-item btn-${group.id}`}
                 style={{ transitionDelay: `${400 + i * 50}ms` }}
                 onMouseMove={handleBtnMouseMove}
+                onTouchStart={handlePointerDown}
+                onTouchEnd={handlePointerUp}
               >
                   <svg className="icon-svg" viewBox="0 0 24 24">
                       <path d={item.iconPath} />
