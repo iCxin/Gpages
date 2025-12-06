@@ -69,6 +69,13 @@ const MainContent = () => {
         label: 'rightWall'
       });
 
+      // Ceiling (initially not added to world to allow falling in)
+      const ceiling = Bodies.rectangle(width / 2, -wallThickness * 2, giantSize, wallThickness, { 
+        isStatic: true,
+        render: { visible: false },
+        label: 'ceiling'
+      });
+
       Composite.add(engine.world, [ground, leftWall, rightWall]);
 
       // Identify DOM elements to animate
@@ -211,6 +218,9 @@ const MainContent = () => {
              // Right Wall: Fixed at right edge
              Body.setPosition(rightWall, { x: newW + wallThickness/2, y: newH / 2 });
 
+             // Ceiling: Fixed at top
+             Body.setPosition(ceiling, { x: newW / 2, y: -wallThickness/2 });
+
              // Ensure bodies are within bounds
              bodies.forEach(b => {
                 // If body is way out of bounds, bring it back
@@ -219,6 +229,8 @@ const MainContent = () => {
                 if (b.position.x > newW + 100) Body.setPosition(b, { x: newW - 50, y: b.position.y });
                 if (b.position.x < -100) Body.setPosition(b, { x: 50, y: b.position.y });
                 if (b.position.y > newH - footerSpace + 100) Body.setPosition(b, { x: b.position.x, y: newH - footerSpace - 50 });
+                // Check top bound too
+                if (b.position.y < -1000) Body.setPosition(b, { x: b.position.x, y: 50 });
              });
          }, 100);
       };
@@ -229,7 +241,19 @@ const MainContent = () => {
       engine.resizeHandler = handleResize;
 
       // --- Device Orientation (Gravity Control) ---
+      let allowGravityControl = false;
+
+      // Enable gravity control and add ceiling after intro animation
+      setTimeout(() => {
+         allowGravityControl = true;
+         Composite.add(engine.world, [ceiling]);
+         // Adjust ceiling position to be flush with top
+         Body.setPosition(ceiling, { x: container.clientWidth / 2, y: -wallThickness/2 });
+      }, 2500);
+
       const handleOrientation = (event) => {
+        if (!allowGravityControl) return;
+
         const { gamma, beta } = event;
         // Check if values are null (can happen on some devices/desktop)
         if (gamma === null || beta === null) return;
