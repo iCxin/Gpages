@@ -178,32 +178,36 @@ const MainContent = () => {
       container.classList.add('loaded');
 
       // Window resize handler
+      let resizeTimeout;
       const handleResize = () => {
-         const newW = container.clientWidth;
-         const newH = container.clientHeight;
-         
-         const wallThickness = 120;
-         const footerSpace = 100; // Keep consistent with init
+         clearTimeout(resizeTimeout);
+         resizeTimeout = setTimeout(() => {
+             const newW = container.clientWidth;
+             const newH = container.clientHeight;
+             
+             const wallThickness = 120;
+             const footerSpace = 100; // Keep consistent with init
 
-         // Reposition walls
-         // Ground: Center X to newW/2, Y to newH - footerSpace + half thickness
-         Body.setPosition(ground, { x: newW / 2, y: newH - footerSpace + wallThickness/2 });
-         
-         // Left Wall: Fixed at left edge
-         Body.setPosition(leftWall, { x: 0 - wallThickness/2, y: newH / 2 });
-         
-         // Right Wall: Move to new right edge
-         Body.setPosition(rightWall, { x: newW + wallThickness/2, y: newH / 2 });
+             // Reposition walls
+             // Ground: Center X to newW/2, Y to newH - footerSpace + half thickness
+             Body.setPosition(ground, { x: newW / 2, y: newH - footerSpace + wallThickness/2 });
+             
+             // Left Wall: Fixed at left edge
+             Body.setPosition(leftWall, { x: 0 - wallThickness/2, y: newH / 2 });
+             
+             // Right Wall: Fixed at right edge
+             Body.setPosition(rightWall, { x: newW + wallThickness/2, y: newH / 2 });
 
-         // Ensure bodies are within bounds
-         bodies.forEach(b => {
-            // If body is way out of bounds, bring it back
-            // Using slightly larger bounds to avoid aggressive teleporting
-            // Adjust bottom bound to respect new floor
-            if (b.position.x > newW + 100) Body.setPosition(b, { x: newW - 50, y: b.position.y });
-            if (b.position.x < -100) Body.setPosition(b, { x: 50, y: b.position.y });
-            if (b.position.y > newH - footerSpace + 100) Body.setPosition(b, { x: b.position.x, y: newH - footerSpace - 50 });
-         });
+             // Ensure bodies are within bounds
+             bodies.forEach(b => {
+                // If body is way out of bounds, bring it back
+                // Using slightly larger bounds to avoid aggressive teleporting
+                // Adjust bottom bound to respect new floor
+                if (b.position.x > newW + 100) Body.setPosition(b, { x: newW - 50, y: b.position.y });
+                if (b.position.x < -100) Body.setPosition(b, { x: 50, y: b.position.y });
+                if (b.position.y > newH - footerSpace + 100) Body.setPosition(b, { x: b.position.x, y: newH - footerSpace - 50 });
+             });
+         }, 100);
       };
       
       window.addEventListener('resize', handleResize);
@@ -240,7 +244,14 @@ const MainContent = () => {
     <div className="container" id="mainContainer" ref={containerRef}>
       <div>
         <div className="avatar-wrapper anim-item" style={{ transitionDelay: '0ms' }}>
-          <img src="/avatar_50KB.png" alt="Avatar" className="avatar" />
+          <img 
+            src="/avatar_50KB.png" 
+            alt="Avatar" 
+            className="avatar" 
+            width="120"
+            height="120"
+            fetchPriority="high"
+          />
         </div>
 
         <h1 className="name anim-item" style={{ transitionDelay: '100ms' }}>CxinLiu</h1>

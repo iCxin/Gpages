@@ -280,7 +280,6 @@ body.lights-off .clouds-container { opacity: 0.3; filter: brightness(0.3); }
   transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 210, 255, 0.2);
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
-.role-divider { color: rgba(255, 255, 255, 0.3); font-size: 0.9rem; transform: skew(-15deg); }
 
 .description { font-size: 1rem; color: var(--text-sub); max-width: 400px; line-height: 1.8; font-weight: 400; margin: 0; text-align: left; }
 
