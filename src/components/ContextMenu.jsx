@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { config } from '../data';
 
 const ContextMenu = ({ showDanmaku, toggleDanmaku }) => {
   const [visible, setVisible] = useState(false);
